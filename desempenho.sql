@@ -11,7 +11,6 @@ GROUP BY order_id
 SELECT sum(tempo_entrega) / count(order_id) AS prazo_médio
 FROM tb_dias_entrega
 --Quais pedidos chegaram atrasados?
---Quais pedidos chegaram atrasados?
 SELECT order_id,
        order_estimated_delivery_date, 
        order_delivered_customer_date 
