@@ -45,7 +45,7 @@ Essas categorias representam uma parcela significativa da receita total da plata
 
 ### Visualização
 
-![Categorias Mais Faturaram](screenshots/categorias_faturamento.png)
+![Categorias Mais Faturaram](screenshots/categorias_maior_faturamento.png)
 
 ---
 
@@ -77,6 +77,8 @@ Algumas categorias permaneceram líderes por vários meses consecutivos, indican
 ### Visualização
 
 Tabela de produtos líderes por mês disponível nos resultados da consulta SQL.
+
+![Produto lider por mês](screenshots/produto_lider_por_mes.png)
 
 ---
 
