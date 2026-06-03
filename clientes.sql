@@ -38,3 +38,7 @@ WHERE categoria_do_produto IS NOT NULL
 GROUP BY categoria_do_produto
 ORDER BY faturamento DESC
 LIMIT 10 
+
+SELECT *
+FROM order_items
+limit 1

@@ -25,6 +25,9 @@ WHERE order_status = 'delivered'
 GROUP BY mes
 ORDER BY mes;
 
+SELECT *
+FROM order_items
+
 
 
 
