@@ -1,50 +1,68 @@
---Quais estados possuem mais clientes?
+-- ==========================================
+-- CUSTOMER ANALYSIS
+-- ==========================================
+
+-- 1. Quais estados possuem mais clientes?
 
 SELECT
-    customer_state AS estado,
-    COUNT(*) AS total_clientes
+customer_state AS estado,
+COUNT(*) AS total_clientes
 FROM customers
 GROUP BY customer_state
 ORDER BY total_clientes DESC
 LIMIT 5;
 
---Quantos clientes compraram mais de uma vez?  
+-- 2. Quantos clientes compraram mais de uma vez?
 
-WITH clientes AS (
-    SELECT
-        c.customer_unique_id,
-        COUNT(DISTINCT o.order_id) AS total_pedidos
-    FROM orders o
-    LEFT JOIN customers c
-        ON o.customer_id = c.customer_id
-    GROUP BY c.customer_unique_id
+WITH cte_customer_orders AS (
+SELECT
+c.customer_unique_id AS id_cliente,
+COUNT(DISTINCT o.order_id) AS total_pedidos
+FROM customers AS c
+LEFT JOIN orders AS o
+ON c.customer_id = o.customer_id
+GROUP BY c.customer_unique_id
 )
 
 SELECT
-    COUNT(CASE WHEN total_pedidos > 1 THEN 1 END) AS clientes_recorrentes,
-    COUNT(*) AS total_clientes,
-    ROUND(
-        100.0 * COUNT(CASE WHEN total_pedidos > 1 THEN 1 END) / COUNT(*),
-        2
-    ) AS percentual_recorrentes
-FROM clientes;
+COUNT(
+CASE
+WHEN total_pedidos > 1 THEN 1
+END
+) AS clientes_recorrentes,
+COUNT(*) AS total_clientes,
+ROUND(
+100.0 *
+COUNT(
+CASE
+WHEN total_pedidos > 1 THEN 1
+END
+) / COUNT(*),
+2
+) AS percentual_recorrentes
+FROM cte_customer_orders;
 
---Quais clientes mais gastaram?
-WITH tb_clientes_pedido AS(
-      SELECT o.order_id,
-            c.customer_unique_id     
-      FROM customers c
-      LEFT JOIN orders o
-      ON c.customer_id = o.customer_id
-      WHERE order_status = 'delivered'
-) 
+-- 3. Quais clientes mais gastaram?
+
+WITH cte_customer_revenue AS (
 SELECT
-    customer_unique_id AS cliente,
-    ROUND(SUM(price + freight_value), 2) AS gasto
+c.customer_unique_id AS id_cliente,
+ROUND(
+SUM(i.price + i.freight_value),
+2
+) AS gasto_total
+FROM customers AS c
+LEFT JOIN orders AS o
+ON c.customer_id = o.customer_id
+LEFT JOIN order_items AS i
+ON o.order_id = i.order_id
+WHERE o.order_status = 'delivered'
+GROUP BY c.customer_unique_id
+)
 
-FROM tb_clientes_pedido cp
-LEFT JOIN order_items i 
-      ON cp.order_id = i.order_id
-GROUP BY customer_unique_id
-ORDER BY gasto DESC 
-LIMIT 10
+SELECT
+id_cliente,
+gasto_total
+FROM cte_customer_revenue
+ORDER BY gasto_total DESC
+LIMIT 10;

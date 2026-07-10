@@ -1,75 +1,111 @@
---Quais clientes geraram maior receita para a empresa?
+-- ==========================================
+-- ADVANCED BUSINESS ANALYSIS
+-- ==========================================
 
-WITH tb_gasto AS (
-    SELECT 
+-- 1. Quais clientes geraram maior receita para a empresa?
+
+WITH cte_customer_revenue AS (
+    SELECT
         c.customer_unique_id AS id_cliente,
         COUNT(DISTINCT o.order_id) AS total_pedidos,
-        ROUND(SUM(i.price + i.freight_value),2) AS gasto_total
-    FROM customers c
-    LEFT JOIN orders o
+        ROUND(
+            SUM(i.price + i.freight_value),
+            2
+        ) AS receita_total
+    FROM customers AS c
+    LEFT JOIN orders AS o
         ON c.customer_id = o.customer_id
-    LEFT JOIN order_items i
+    LEFT JOIN order_items AS i
         ON o.order_id = i.order_id
-    GROUP BY id_cliente
+    WHERE o.order_status = 'delivered'
+    GROUP BY c.customer_unique_id
 )
 
-SELECT *,
-       ROUND(gasto_total / total_pedidos, 2) AS ticket_medio
-FROM tb_gasto
-ORDER BY gasto_total DESC
+SELECT
+    id_cliente,
+    total_pedidos,
+    receita_total,
+    ROUND(
+        receita_total / total_pedidos,
+        2
+    ) AS ticket_medio
+FROM cte_customer_revenue
+ORDER BY receita_total DESC
 LIMIT 10;
 
---Existe sazonalidade diferente entre categorias?
 
-WITH tb_categoria AS(
-    SELECT  
-            substr(o.order_purchase_timestamp,1,7) AS data,
-            p.product_category_name AS categoria, 
-            ROUND(SUM(i.price + i.freight_value),2) AS gasto   
-    FROM orders o 
-    LEFT JOIN order_items i
-    ON o.order_id = i.order_id
-    LEFT JOIN products p 
-    ON i.product_id = p.product_id
-    WHERE order_status = 'delivered'
-    AND p.product_category_name IS NOT NULL
-    GROUP BY data, categoria 
-), tb_gasto_por_categoria AS( 
-SELECT *,
-       ROW_NUMBER() OVER (PARTITION BY data ORDER BY gasto DESC) AS rn 
-FROM tb_categoria 
-), resultado_final AS(
-SELECT *
-FROM tb_gasto_por_categoria
-WHERE rn = 1  
-) 
+-- 2. Existe sazonalidade diferente entre categorias?
+
+WITH cte_monthly_category_revenue AS (
+    SELECT
+        strftime('%Y-%m', o.order_purchase_timestamp) AS mes,
+        p.product_category_name AS categoria,
+        ROUND(
+            SUM(i.price + i.freight_value),
+            2
+        ) AS faturamento
+    FROM orders AS o
+    LEFT JOIN order_items AS i
+        ON o.order_id = i.order_id
+    LEFT JOIN products AS p
+        ON i.product_id = p.product_id
+    WHERE o.order_status = 'delivered'
+        AND p.product_category_name IS NOT NULL
+    GROUP BY
+        mes,
+        categoria
+),
+
+cte_category_ranking AS (
+    SELECT
+        mes,
+        categoria,
+        faturamento,
+        ROW_NUMBER() OVER (
+            PARTITION BY mes
+            ORDER BY faturamento DESC
+        ) AS ranking
+    FROM cte_monthly_category_revenue
+),
+
+cte_monthly_leaders AS (
+    SELECT
+        categoria
+    FROM cte_category_ranking
+    WHERE ranking = 1
+)
+
 SELECT
     categoria,
     COUNT(*) AS meses_lider
-FROM resultado_final
+FROM cte_monthly_leaders
 GROUP BY categoria
 ORDER BY meses_lider DESC;
 
---Qual categoria possui maior tempo médio de entrega?
 
-WITH tb_prazo AS(
+-- 3. Qual categoria possui maior tempo médio de entrega?
+
+WITH cte_category_delivery_time AS (
     SELECT
         p.product_category_name AS categoria,
         julianday(o.order_delivered_customer_date) -
-        julianday(o.order_purchase_timestamp) AS prazo_entrega
-    FROM orders o
-    LEFT JOIN order_items i
+        julianday(o.order_purchase_timestamp) AS dias_entrega
+    FROM orders AS o
+    LEFT JOIN order_items AS i
         ON o.order_id = i.order_id
-    LEFT JOIN products p
+    LEFT JOIN products AS p
         ON i.product_id = p.product_id
     WHERE o.order_status = 'delivered'
-    AND p.product_category_name IS NOT NULL
+        AND p.product_category_name IS NOT NULL
 )
 
 SELECT
     categoria,
-    ROUND(AVG(prazo_entrega),2) AS prazo_medio_entrega
-FROM tb_prazo
+    ROUND(
+        AVG(dias_entrega),
+        2
+    ) AS prazo_medio_entrega
+FROM cte_category_delivery_time
 GROUP BY categoria
 ORDER BY prazo_medio_entrega DESC
-LIMIT 10;    
+LIMIT 10;

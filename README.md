@@ -1,87 +1,187 @@
-# 📦 Análise de Vendas — Dataset Olist
+# 📊 Olist Sales Dashboard | SQL + Power BI
 
-Análise exploratória de dados de e-commerce brasileiro utilizando **SQL (SQLite)**.  
-Os dados são do dataset público da [Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) disponível no Kaggle.
+![SQL](https://img.shields.io/badge/SQL-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
+![Status](https://img.shields.io/badge/Status-Concluído-success?style=for-the-badge)
+
+Projeto de análise de dados utilizando o dataset público da **Olist**, desenvolvido com **SQL (SQLite)** para exploração e transformação dos dados e **Power BI** para construção de dashboards interativos.
+
+O objetivo do projeto é transformar dados brutos em informações estratégicas para apoiar decisões de negócio relacionadas a vendas, clientes, produtos e logística.
 
 ---
 
-## 🎯 Objetivo
+# 📊 Dashboard
 
-Responder perguntas de negócio sobre vendas, clientes, produtos e desempenho de entrega, utilizando SQL puro como ferramenta principal de análise.
+O dashboard é composto por **quatro páginas analíticas**:
+
+- 📈 Dashboard Executivo
+- 👥 Análise de Clientes
+- 🛍️ Produtos & Vendas
+- 🚚 Análise de Entregas
+
+Além do arquivo **.pbix**, o projeto também contém um relatório em **PDF** com todas as páginas do dashboard.
 
 ---
 
-## 🗂️ Estrutura do Projeto
+# 🎯 Objetivos
+
+Responder perguntas de negócio como:
+
+### 📈 Vendas
+
+- Qual o faturamento total?
+- Qual o ticket médio?
+- Como as vendas evoluíram ao longo do tempo?
+- Quais categorias geram mais receita?
+
+### 👥 Clientes
+
+- Quantos clientes realizaram compras?
+- Qual a taxa de recorrência?
+- Quais estados possuem mais clientes?
+- Como o frete impacta a satisfação?
+
+### 🛍️ Produtos
+
+- Quais categorias vendem mais?
+- Quais categorias possuem maior ticket médio?
+- Existe relação entre preço e volume de vendas?
+
+### 🚚 Entregas
+
+- Quantas entregas foram realizadas?
+- Quantas ocorreram no prazo?
+- Quantas atrasaram?
+- Qual região possui o maior prazo médio?
+- Como o atraso impacta a avaliação do cliente?
+
+---
+
+# 📌 KPIs Desenvolvidos
+
+- 💰 Receita Total
+- 🛒 Ticket Médio
+- 📦 Total de Pedidos
+- 👥 Total de Clientes
+- 🆕 Clientes Novos
+- 🔄 Clientes Recorrentes
+- 📈 Taxa de Recorrência
+- 🛍️ Total de Produtos
+- 🏷️ Total de Categorias
+- 🚚 Total de Entregas
+- ✅ Entregas no Prazo
+- ⏰ Entregas Atrasadas
+- 📅 Prazo Médio de Entrega
+- ⭐ Avaliação Média
+
+---
+
+# 💡 Principais Insights
+
+| Insight | Resultado |
+|----------|-----------|
+| 🏙️ São Paulo concentra o maior número de clientes | ~42 mil clientes |
+| 🔄 Apenas 3% dos clientes realizaram mais de uma compra | Baixa recorrência |
+| 📈 Novembro/2017 apresentou o maior pico de pedidos | Black Friday |
+| 🛏️ Cama, Mesa e Banho lidera em volume de vendas | Categoria mais vendida |
+| 💄 Beleza e Saúde lidera em faturamento | Maior receita |
+| 🚚 Prazo médio de entrega | 12,56 dias |
+| ⚠️ Cerca de 8% das entregas atrasaram | Impacto na satisfação |
+| ⭐ Pedidos entregues no prazo receberam avaliações superiores | Melhor experiência do cliente |
+
+---
+
+# 🛠️ Tecnologias
+
+| Ferramenta | Finalidade |
+|------------|------------|
+| SQL (SQLite) | Consultas e análise dos dados |
+| Power BI | Construção dos dashboards |
+| Python | Criação do banco SQLite |
+| Git | Versionamento |
+| GitHub | Portfólio do projeto |
+
+---
+
+# 📁 Estrutura do Projeto
 
 ```
-olist-sql-analysis/
-├── queries/
-│   ├── 01_visao_geral.sql      # Faturamento, ticket médio e pedidos por mês
-│   ├── 02_clientes.sql         # Distribuição geográfica e recorrência
-│   ├── 03_produtos.sql         # Categorias mais vendidas e maior faturamento
-│   └── 04_desempenho.sql       # Prazo médio e pedidos atrasados
-├── setup_banco.py              # Script para criar o banco SQLite a partir dos CSVs
+olist-sales-dashboard/
+│
+├── dashboard/
+│   ├── olist_dashboard.pbix
+│   └── dashboard_preview.png
+│
+├── pdf/
+│   └── Olist Dashboard.pdf
+│
+├── sql/
+│   ├── 01_dashboard_executivo.sql
+│   ├── 02_clientes.sql
+│   ├── 03_produtos_vendas.sql
+│   └── 04_entregas.sql
+│
+├── setup_banco.py
+│
 └── README.md
 ```
 
 ---
 
-## ❓ Perguntas Respondidas
+# ▶️ Como Executar
 
-### 📊 Visão Geral
-- Qual o faturamento total da Olist? (apenas pedidos entregues)
-- Qual o ticket médio por pedido?
-- Qual a evolução de pedidos ao longo dos meses?
+### 1. Clone o repositório
 
-### 👥 Clientes
-- Quais os 5 estados com mais clientes?
-- Quantos clientes fizeram mais de 1 pedido?
+```bash
+git clone https://github.com/g-leonardo/olist-sales-dashboard.git
+```
 
-### 🛍️ Produtos
-- Quais as 10 categorias mais vendidas?
-- Qual a categoria com maior faturamento?
+### 2. Baixe o dataset
 
-### 🚚 Desempenho
-- Qual o prazo médio de entrega?
-- Quantos pedidos chegaram atrasados?
+Dataset oficial da Olist:
 
----
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 
-## 💡 Principais Insights
+### 3. Instale as dependências
 
-- **São Paulo domina** a base de clientes com ~41.700 clientes, cerca de 30.000 a mais que o segundo colocado, Rio de Janeiro (12.800)
-- **Baixa retenção:** de 99.441 clientes, apenas 2.997 fizeram mais de 1 pedido — indicando que a base é majoritariamente de novos clientes
-- **Black Friday:** novembro de 2017 registrou o maior pico de pedidos (7.289), bem acima da média dos meses anteriores
-- **cama_mesa_banho** é a categoria mais vendida em volume E está no top 3 de faturamento — mostrando consistência em vendas e receita
-- **beleza_saude** lidera em faturamento mesmo com menos vendas que cama_mesa_banho, indicando produtos com ticket mais alto
-- **Prazo médio de entrega:** 12,5 dias
-- **8% dos pedidos** chegaram atrasados (7.827 de 96.478 entregues)
-
----
-
-## 🛠️ Tecnologias
-
-- SQL (SQLite)
-- Python (apenas para setup do banco)
-- VS Code + SQLite Viewer
-
----
-
-## ▶️ Como Reproduzir
-
-1. Baixe o dataset no [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
-2. Instale as dependências:
 ```bash
 pip install kagglehub pandas
 ```
-3. Rode o script de setup:
+
+### 4. Crie o banco SQLite
+
 ```bash
 python setup_banco.py
 ```
-4. Abra os arquivos `.sql` na pasta `queries/` e execute no VS Code
+
+### 5. Execute as consultas SQL
+
+Abra os arquivos da pasta **sql/** no VS Code ou em qualquer cliente SQLite.
+
+### 6. Abra o Dashboard
+
+Abra o arquivo:
+
+```
+dashboard/olist_dashboard.pbix
+```
+
+utilizando o **Power BI Desktop**.
 
 ---
 
-## 👤 Autor
+# 📄 Relatório
 
-Feito por **Gabriel Leonardo** — projeto de portfólio para a área de dados.
+O repositório também contém um relatório em PDF com todas as páginas do dashboard e os principais indicadores analisados.
+
+---
+
+# 👨‍💻 Autor
+
+**Gabriel Leonardo**
+
+Projeto desenvolvido para compor meu portfólio de **Análise de Dados**, aplicando SQL e Power BI na resolução de problemas de negócio utilizando dados reais do e-commerce brasileiro.
+
+[![GitHub](https://img.shields.io/badge/GitHub-g--leonardo-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/g-leonardo)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Conectar-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gabriel-leonardo-9524933b1/)
